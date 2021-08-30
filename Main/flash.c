@@ -5,6 +5,7 @@
 
 #define FLASH_BUFFER_SIZE ((uint16_t)1 * 8192)
 #define FLASH_FILE "update.bin"
+#define MIN(a, b) (a < b ? a : b)
 
 typedef void (*pFunction)(void);
 
@@ -26,8 +27,9 @@ void FLASH_If_Init(void)
   HAL_FLASH_Lock();
 }
 
-HAL_StatusTypeDef FLASH_If_Erase(uint32_t start)
+HAL_StatusTypeDef FLASH_If_Erase(uint32_t start, uint32_t size)
 {
+  uint32_t strOfSector = 0;
   uint32_t nbrOfSectors = 0;
   uint32_t pageError = 0;
   FLASH_EraseInitTypeDef pEraseInit = {0};
@@ -37,11 +39,28 @@ HAL_StatusTypeDef FLASH_If_Erase(uint32_t start)
   HAL_FLASH_Unlock();
 
   /* Get the sector where start the user flash area */
-  nbrOfSectors = (FLASH_SECTOR_TOTAL - start);
+	for (uint16_t i = 0; i < FLASH_SECTOR_TOTAL_COUNT; i++)
+	{
+		if (start >= FLASH_SECTOR_SIZES[i] * 1024)
+		{
+			start -= FLASH_SECTOR_SIZES[i] * 1024;
+			strOfSector++;
+		}
+		else
+		{
+			start = 0;
+			
+			if (size > 0)
+			{
+				size -= MIN(FLASH_SECTOR_SIZES[i] * 1024, size);
+				nbrOfSectors++;
+			}
+		}
+	}
 
   pEraseInit.TypeErase = FLASH_TYPEERASE_SECTORS;
 	pEraseInit.VoltageRange = FLASH_VOLTAGE_RANGE_3;
-  pEraseInit.Sector = start;
+  pEraseInit.Sector = strOfSector;
   pEraseInit.NbSectors = nbrOfSectors;
   status = HAL_FLASHEx_Erase(&pEraseInit, &pageError);
 
@@ -144,7 +163,7 @@ HAL_StatusTypeDef FLASH_TryUpdate(void)
 			/* Initialize Flash */
 			FLASH_If_Init();
 
-			if (FLASH_If_Erase(APPLICATION_SECTOR) == HAL_OK)
+			if (FLASH_If_Erase(APPLICATION_ADDRESS - FLASH_START, f_size(&FlashFile) + 0x10) == HAL_OK)
 			{
 				status = FLASH_ProgramFlashMemory();
 			}
