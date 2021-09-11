@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>     ../Core/Inc;            ../Drivers/STM32F4xx_HAL_Driver/Inc;            ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;            ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;            ../Drivers/CMSIS/Include;            ..\Main;    ../FATFS/Target;    ../FATFS/App;    ../Middlewares/Third_Party/FatFs/src</IncludePath>
+              <IncludePath>../Core/Inc;            ../Drivers/STM32F4xx_HAL_Driver/Inc;            ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;            ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;            ../Drivers/CMSIS/Include;            ..\Main;    ../FATFS/Target;    ../FATFS/App;    ../Middlewares/Third_Party/FatFs/src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1183,9 +1183,14 @@
               <FilePath>..\Main\app.c</FilePath>
             </File>
             <File>
-              <FileName>flash.c</FileName>
+              <FileName>flash_if.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Main\flash.c</FilePath>
+              <FilePath>..\Main\flash_if.c</FilePath>
+            </File>
+            <File>
+              <FileName>fs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Main\fs.c</FilePath>
             </File>
           </Files>
         </Group>
