@@ -15,7 +15,7 @@ void APP_Init(void)
 {
 	FS_Init();
 	
-	if (FS_IsExistingFile(FLASH_FILE) && FS_Size(FLASH_FILE) == FLASH_IF_SIZE)
+	if (FS_IsExistingFile(FLASH_FILE) && FS_Size(FLASH_FILE) <= FLASH_IF_SIZE)
 	{
 		uint8_t buffer[FILE_BUFFER_SIZE];
 		FLASH_IF_Init();
