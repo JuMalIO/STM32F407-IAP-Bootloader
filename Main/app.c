@@ -9,7 +9,7 @@
 typedef void (*pFunction)(void);
 
 pFunction JumpToApplication;
-uint32_t  JumpAddress;
+uint32_t JumpAddress;
 
 void APP_Init(void)
 {
@@ -39,19 +39,19 @@ void APP_Run(void)
 	SysTick->LOAD = 0;
 	SysTick->VAL = 0;
 	
-  //__HAL_RCC_SYSCFG_CLK_ENABLE();
-  //__HAL_SYSCFG_REMAPMEMORY_SYSTEMFLASH();
+	//__HAL_RCC_SYSCFG_CLK_ENABLE();
+	//__HAL_SYSCFG_REMAPMEMORY_SYSTEMFLASH();
 	
 	/* Jump to user application */
 	JumpAddress = *(__IO uint32_t*) (FLASH_IF_APPLICATION_ADDRESS + 4);
 	JumpToApplication = (pFunction) JumpAddress;
 	/* Initialize user application's Stack Pointer */
-#if   (defined ( __GNUC__ ))
+#if (defined ( __GNUC__ ))
 	/* Compensation as the Stack Pointer is placed at the very end of RAM */
 	__set_MSP((*(__IO uint32_t*) APPLICATION_ADDRESS) - 64);
-#else  /* (defined  (__GNUC__ )) */
+#else /* (defined (__GNUC__ )) */
 	__set_MSP(*(__IO uint32_t*) FLASH_IF_APPLICATION_ADDRESS);
-#endif /* (defined  (__GNUC__ )) */
+#endif /* (defined (__GNUC__ )) */
 
 	JumpToApplication();
 }
